@@ -2,7 +2,7 @@ import deeptrack as dt
 import numpy as np
 import matplotlib.pyplot as plt
 
-from particle import *
+from simulation import *
 
 def pos(n_particles):
     position = np.zeros((n_particles,2))
@@ -39,14 +39,14 @@ class Normalize(dt.Feature):
 
 normalization = Normalize()
 
-gauss = dt.Gaussian(mu = 0, sigma = .02)
+gauss = dt.Gaussian(mu = 0, sigma = .01)
 
 import scipy
 #Smoothing
-kernel = np.ones((5, 5)) / 15
+kernel = np.ones((3, 3)) / 15
 smoothing = dt.Lambda(lambda: lambda image: scipy.ndimage.filters.convolve(image, kernel)) 
 
-particle +=  smoothing + gradient +gauss + normalization 
+particle +=  smoothing  +gauss + normalization 
 
 
 def get_label(a, b):
