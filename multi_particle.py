@@ -4,10 +4,6 @@ import matplotlib.pyplot as plt
 
 from simulation import *
 
-def pos(n_particles):
-    position = np.zeros((n_particles,2))
-    return position
-
 sim= MultiParticle(
     
     
