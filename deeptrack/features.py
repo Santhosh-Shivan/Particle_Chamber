@@ -1044,6 +1044,9 @@ class Slice(Feature):
         except ValueError:
             pass
 
+        if len(slices) == 1:
+            slices = slices[0]
+
         return image[slices]
 
 
