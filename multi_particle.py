@@ -10,11 +10,10 @@ sim = MultiParticle(
     n_particles=lambda: int(np.random.rand() * 10) + 15,
 )
 # print('a', np.array(sim[1]) )
-particle = Updater(sim[0])
-
-pos = Updater(sim[1])
-
-rad = Updater(sim[2])
+starting_value = dt.Value(lambda: np.ones((IMAGE_SIZE, IMAGE_SIZE)))
+particle = starting_value >> sim[0]
+pos = starting_value >> sim[1]
+rad = starting_value >> sim[2]
 
 
 gradient = dt.IlluminationGradient(
@@ -49,7 +48,7 @@ particle = particle >> smoothing >> gauss >> normalization
 def get_label(a, b):
     a = a.resolve()
     b = b.resolve()
-    n = np.shape(a)[0]
+    n = int(np.shape(a)[0])
     label = np.zeros((n, 4))
 
     for i in range(n):
