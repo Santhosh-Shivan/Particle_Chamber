@@ -43,7 +43,7 @@ smoothing = dt.Lambda(
     lambda: lambda image: scipy.ndimage.filters.convolve(image, kernel)
 )
 
-particle += smoothing + gauss + normalization
+particle = particle >> smoothing >> gauss >> normalization
 
 
 def get_label(a, b):
