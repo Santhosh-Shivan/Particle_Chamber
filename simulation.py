@@ -31,7 +31,7 @@ class MultiParticle(dt.Feature):
 
         mask = -1 * (mask - 1)
 
-        return (mask, position, radius)
+        return (np.expand_dims(mask, axis=0), position, radius)  #
 
 
 class Updater(dt.Feature):
