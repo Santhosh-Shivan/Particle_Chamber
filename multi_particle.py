@@ -10,10 +10,10 @@ sim = MultiParticle(
     n_particles=lambda: int(np.random.rand() * 10) + 15,
 )
 # print('a', np.array(sim[1]) )
-starting_value = dt.Value(lambda: np.ones((IMAGE_SIZE, IMAGE_SIZE)))
+starting_value = dt.Value(lambda: np.zeros((IMAGE_SIZE, IMAGE_SIZE)))
 particle = starting_value >> sim[0]
-pos = starting_value >> sim[1]
-rad = starting_value >> sim[2]
+pos = sim[1]  # starting_value >> sim[1]
+rad = sim[2]  # starting_value >> sim[2]
 
 
 gradient = dt.IlluminationGradient(
