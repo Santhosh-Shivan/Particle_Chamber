@@ -15,7 +15,7 @@ class MultiParticle(dt.Feature):
 
         for i in range(n_particles):
             radius[i, :] = (2 + np.random.rand() * 1,)
-            position[i, :] = np.random.rand(2) * (100)
+            position[i, :] = 10 + np.random.rand(2) * 80  # np.random.rand(2) * (100)
 
             mask = mask + (
                 (X - int(position[i, 0])) ** 2 + (Y - int(position[i, 1])) ** 2
