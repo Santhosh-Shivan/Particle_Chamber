@@ -20,14 +20,14 @@ class MultiParticle(dt.Feature):
             mask = mask + (
                 (X - int(position[i, 0])) ** 2 + (Y - int(position[i, 1])) ** 2
                 <= radius[i] ** 2
-            ) * (0.4 + np.random.rand() * 0.2)
+            ) * (0.65 + np.random.rand() * 0.05)
 
         for i in range(image.shape[0]):
             for j in range(image.shape[1]):
-                if mask[i, j] > 0.6:
+                if mask[i, j] > 0.8:
                     mask[i, j] = mask[i, j] / np.max(mask)
                 if mask[i, j] == 0:
-                    mask[i, j] = 0.2 + np.random.rand() * 0.05
+                    mask[i, j] = 0.3 + np.random.rand() * 0.05
 
         mask = -1 * (mask - 1)
 
