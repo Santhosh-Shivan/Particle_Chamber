@@ -118,7 +118,8 @@ class YOLObase(keras.Model):
             total_loss = giou_loss + conf_loss + prob_loss
 
             gradients = tape.gradient(total_loss, self.trainable_variables)
-            self.optimizer.apply_gradients(zip(gradients, self.trainable_variables))
+            self.optimizer.apply_gradients(
+                zip(gradients, self.trainable_variables))
 
             return {
                 "loss": total_loss,
@@ -229,9 +230,6 @@ class YOLObase(keras.Model):
         return y
 
 
-import tensorflow as tf
-
-
 class YOLOv3(YOLObase):
     def __init__(
         self,
@@ -272,8 +270,8 @@ class YOLOv3(YOLObase):
         conv = common.convolutional(conv, (1, 1, 1024, 512))
         conv = common.convolutional(conv, (3, 3, 512, 1024))
         conv = common.convolutional(conv, (1, 1, 1024, 512))
-        conv = common.convolutional(conv, (3, 3, 512, 1024))
-        conv = common.convolutional(conv, (1, 1, 1024, 512))
+        """conv = common.convolutional(conv, (3, 3, 512, 1024))
+        conv = common.convolutional(conv, (1, 1, 1024, 512))"""
 
         conv_lobj_branch = common.convolutional(conv, (3, 3, 512, 1024))
         conv_lbbox = common.convolutional(
@@ -291,8 +289,8 @@ class YOLOv3(YOLObase):
         conv = common.convolutional(conv, (1, 1, 768, 256))
         conv = common.convolutional(conv, (3, 3, 256, 512))
         conv = common.convolutional(conv, (1, 1, 512, 256))
-        conv = common.convolutional(conv, (3, 3, 256, 512))
-        conv = common.convolutional(conv, (1, 1, 512, 256))
+        """conv = common.convolutional(conv, (3, 3, 256, 512))
+        conv = common.convolutional(conv, (1, 1, 512, 256))"""
 
         conv_mobj_branch = common.convolutional(conv, (3, 3, 256, 512))
         conv_mbbox = common.convolutional(
@@ -310,8 +308,8 @@ class YOLOv3(YOLObase):
         conv = common.convolutional(conv, (1, 1, 384, 128))
         conv = common.convolutional(conv, (3, 3, 128, 256))
         conv = common.convolutional(conv, (1, 1, 256, 128))
-        conv = common.convolutional(conv, (3, 3, 128, 256))
-        conv = common.convolutional(conv, (1, 1, 256, 128))
+        """conv = common.convolutional(conv, (3, 3, 128, 256))
+        conv = common.convolutional(conv, (1, 1, 256, 128))"""
 
         conv_sobj_branch = common.convolutional(conv, (3, 3, 128, 256))
         conv_sbbox = common.convolutional(
@@ -321,7 +319,8 @@ class YOLOv3(YOLObase):
             bn=False,
         )
 
-        self.model = keras.Model(input_layer, [conv_sbbox, conv_mbbox, conv_lbbox])
+        self.model = keras.Model(
+            input_layer, [conv_sbbox, conv_mbbox, conv_lbbox])
 
 
 class YOLOv4(YOLObase):
@@ -438,7 +437,8 @@ def decode_train(
     )
 
     xy_grid = tf.meshgrid(tf.range(output_size), tf.range(output_size))
-    xy_grid = tf.expand_dims(tf.stack(xy_grid, axis=-1), axis=2)  # [gx, gy, 1, 2]
+    xy_grid = tf.expand_dims(tf.stack(xy_grid, axis=-1),
+                             axis=2)  # [gx, gy, 1, 2]
     xy_grid = tf.tile(
         tf.expand_dims(xy_grid, axis=0), [tf.shape(conv_output)[0], 1, 1, 3, 1]
     )
@@ -446,7 +446,8 @@ def decode_train(
     xy_grid = tf.cast(xy_grid, tf.float32)
 
     pred_xy = (
-        (tf.sigmoid(conv_raw_dxdy) * XYSCALE[i]) - 0.5 * (XYSCALE[i] - 1) + xy_grid
+        (tf.sigmoid(conv_raw_dxdy) *
+         XYSCALE[i]) - 0.5 * (XYSCALE[i] - 1) + xy_grid
     ) * STRIDES[i]
     pred_wh = tf.exp(conv_raw_dwdh) * ANCHORS[i]
     pred_xywh = tf.concat([pred_xy, pred_wh], axis=-1)
@@ -473,13 +474,16 @@ def decode_detect(
     )
 
     xy_grid = tf.meshgrid(tf.range(output_size), tf.range(output_size))
-    xy_grid = tf.expand_dims(tf.stack(xy_grid, axis=-1), axis=2)  # [gx, gy, 1, 2]
-    xy_grid = tf.tile(tf.expand_dims(xy_grid, axis=0), [batch_size, 1, 1, 3, 1])
+    xy_grid = tf.expand_dims(tf.stack(xy_grid, axis=-1),
+                             axis=2)  # [gx, gy, 1, 2]
+    xy_grid = tf.tile(tf.expand_dims(xy_grid, axis=0),
+                      [batch_size, 1, 1, 3, 1])
 
     xy_grid = tf.cast(xy_grid, tf.float32)
 
     pred_xy = (
-        (tf.sigmoid(conv_raw_dxdy) * XYSCALE[i]) - 0.5 * (XYSCALE[i] - 1) + xy_grid
+        (tf.sigmoid(conv_raw_dxdy) *
+         XYSCALE[i]) - 0.5 * (XYSCALE[i] - 1) + xy_grid
     ) * STRIDES[i]
     pred_wh = tf.exp(conv_raw_dwdh) * ANCHORS[i]
     pred_xywh = tf.concat([pred_xy, pred_wh], axis=-1)
