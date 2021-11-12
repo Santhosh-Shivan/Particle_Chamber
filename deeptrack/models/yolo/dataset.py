@@ -215,7 +215,8 @@ class YoloDataGenerator(ContinuousGenerator):
             )
             for i in range(3)
         ]
-        bboxes_xywh = [np.zeros((self.max_bbox_per_scale, 4)) for _ in range(3)]
+        bboxes_xywh = [np.zeros((self.max_bbox_per_scale, 4))
+                       for _ in range(3)]
         bbox_count = np.zeros((3,))
 
         for bbox in bboxes:
@@ -224,7 +225,8 @@ class YoloDataGenerator(ContinuousGenerator):
 
             onehot = np.zeros(self.num_classes, dtype=np.float)
             onehot[bbox_class_ind] = 1.0
-            uniform_distribution = np.full(self.num_classes, 1.0 / self.num_classes)
+            uniform_distribution = np.full(
+                self.num_classes, 1.0 / self.num_classes)
             deta = 0.01
             smooth_onehot = onehot * (1 - deta) + deta * uniform_distribution
             bbox_xywh = np.concatenate(
@@ -254,7 +256,8 @@ class YoloDataGenerator(ContinuousGenerator):
                 iou_mask = iou_scale > 0.3
 
                 if np.any(iou_mask):
-                    xind, yind = np.floor(bbox_xywh_scaled[i, 0:2]).astype(np.int32)
+                    xind, yind = np.floor(
+                        bbox_xywh_scaled[i, 0:2]).astype(np.int32)
 
                     label[i][yind, xind, iou_mask, :] = 0
                     label[i][yind, xind, iou_mask, 0:4] = bbox_xywh
@@ -280,7 +283,8 @@ class YoloDataGenerator(ContinuousGenerator):
                 label[best_detect][yind, xind, best_anchor, 4:5] = 1.0
                 label[best_detect][yind, xind, best_anchor, 5:] = smooth_onehot
 
-                bbox_ind = int(bbox_count[best_detect] % self.max_bbox_per_scale)
+                bbox_ind = int(bbox_count[best_detect] %
+                               self.max_bbox_per_scale)
                 bboxes_xywh[best_detect][bbox_ind, :4] = bbox_xywh
                 bbox_count[best_detect] += 1
         label_sbbox, label_mbbox, label_lbbox = label
